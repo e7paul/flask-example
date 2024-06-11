@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% set active_page = "index" %}
+
+{% block content %}
+<table class="divide-y divide-gray-200">
+    <thead>
+        <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Datetime</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Is exit</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+    {% for entry in entries %}
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap">{{ entry['id'] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ entry['number'] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ entry['datetime'] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ entry['isExit'] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ entry['gender'] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
