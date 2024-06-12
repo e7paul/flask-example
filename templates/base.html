@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} {% endblock %} - FlaskApp</title>
+    <title>Flask App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @tailwind base;
@@ -28,15 +28,21 @@
     {% set active_page = active_page|default('index') -%}
     <div class="flex flew-row gap-10 text-xl">
         {% for href, id, caption in navigation_bar %}
-            <a href="{{ href|e }}" {% if id == active_page %} class="bg-gray-200"{% endif %}>{{ caption|e }}</a>
+            <a href="{{ href|e }}" {% if id == active_page %} class="underline"{% endif %}>{{ caption|e }}</a>
         {% endfor %}
     </div>
 </header>
 <hr>
 <div class="content grow">
-    {% for message in get_flashed_messages() %}
+    {% for message in get_flashed_messages(category_filter=['error']) %}
     <div class="bg-red-200 border-red-600 text-red-600 border-l-4 p-4" role="alert">
-        <p class="font-bold">Alert</p>
+        <p class="font-bold">Error</p>
+        <p>{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% for message in get_flashed_messages(category_filter=['info']) %}
+    <div class="bg-yellow-200 border-yellow-600 text-yellow-600 border-l-4 p-4" role="alert">
+        <p class="font-bold">Info</p>
         <p>{{ message }}</p>
     </div>
     {% endfor %}
