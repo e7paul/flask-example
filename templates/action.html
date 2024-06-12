@@ -9,7 +9,8 @@
                 <div class="mb-5">
                     <label for="number" class="block mb-2 font-bold text-gray-600">Number</label>
                     <input type="number" id="number" name="number" class="border border-gray-300 shadow p-3 w-full rounded mb-"
-                           value="{% if entry is defined and entry.number is defined %}{{ entry.number }}{% endif %}">
+                        value="{% if entry is defined and entry.number is defined %}{{ entry.number }}{% endif %}"
+                        autocomplete="off" />
                 </div>
 
                 <div class="mb-5">
@@ -33,17 +34,13 @@
                         Gender
                     </h4>
                     <div>
+                        {% for gender in genders %}
                         <label class="flex bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-300 cursor-pointer ">
-                            <input type="radio" name="gender" value="M"
-                                {% if entry is defined and entry.gender is defined and entry.gender == 'M' %} checked {% endif %} />
-                            <i class="pl-2">Male</i>
+                            <input type="radio" name="gender" value="{{ gender.id }}"
+                                   {% if entry is defined and entry.gender is defined and entry.gender == gender.id %} checked {% endif %} />
+                            <i class="pl-2">{{ gender.name }}</i>
                         </label>
-
-                        <label class="flex bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-300 cursor-pointer ">
-                            <input type="radio" name="gender" value="F"
-                               {% if entry is defined and entry.gender is defined and entry.gender == 'F' %} checked {% endif %} />
-                            <i class="pl-2">Female</i>
-                        </label>
+                        {% endfor %}
                     </div>
                 </div>
 

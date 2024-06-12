@@ -7,11 +7,17 @@ with open('schema.sql') as f:
 
 cur = connection.cursor()
 
-cur.execute("INSERT INTO entries (number, datetime, isExit, gender) VALUES (?, ?, ?, ?)",
-    ('1', '2020-01-10T13:00:00', 0, 'F')
+cur.execute("INSERT INTO genders (name) VALUES (?)",
+    ('Male')
+)
+cur.execute("INSERT INTO genders (name) VALUES (?)",
+    ('Female')
 )
 cur.execute("INSERT INTO entries (number, datetime, isExit, gender) VALUES (?, ?, ?, ?)",
-    ('2', '2020-01-10T13:05:00', 1, 'F')
+    ('1', '2020-01-10T13:00:00', 0, 1)
+)
+cur.execute("INSERT INTO entries (number, datetime, isExit, gender) VALUES (?, ?, ?, ?)",
+    ('2', '2020-01-10T13:05:00', 1, 1)
 )
 
 connection.commit()

@@ -18,18 +18,27 @@ def get_entry(entry_id):
         abort(404)
     return entries
 
+def get_genders():
+    conn = get_db_connection()
+    genders = conn.execute('SELECT * FROM genders').fetchall()
+    conn.close()
+    if genders is None:
+        abort(404)
+    return genders
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
     conn = get_db_connection()
-    entries = conn.execute('SELECT * FROM entries').fetchall()
+    entries = conn.execute('SELECT entries.id, entries.number, entries.datetime, entries.isExit, genders.name as gender FROM entries INNER JOIN genders on genders.id = entries.gender').fetchall()
     conn.close()
     return render_template('index.html', entries=entries)
 
 @app.route('/create/', methods=('GET', 'POST'))
 def create():
+    genders = get_genders()
     if request.method == 'POST':
         number = request.form.get('number', '')
         datetime = request.form.get('datetime', '')
@@ -49,11 +58,12 @@ def create():
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
-    return render_template('create.html')
+    return render_template('create.html', genders=genders)
 
 @app.route('/<int:id>/edit/', methods=('GET', 'POST'))
 def edit(id):
     entry = get_entry(id)
+    genders = get_genders()
 
     if request.method == 'POST':
         number = request.form.get('number', '')
@@ -75,7 +85,7 @@ def edit(id):
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('edit.html', entry=entry)
+    return render_template('edit.html', entry=entry, genders=genders)
 
 @app.route('/<int:id>/delete/', methods=('GET',))
 def delete(id):
@@ -89,13 +99,3 @@ def delete(id):
 
 app.run(debug=True)
 
-
-class Entries(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  number = db.Column(db.Integer(19), unique=False, nullable=False)
-  datetime = db.Column(db.String(19), unique=False, nullable=False)
-  isExit = db.Column(db.Bool(19), unique=False, nullable=False)
-  gender = db.Column(db.String(1), unique=False, nullable=False)
-
-  def __repr__(self):
-        return f'<Entity {self.id}, {self.number}, {self.datetime}, {self.isExit}, {self.gender}>'
