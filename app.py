@@ -1,15 +1,19 @@
+# импорт зависимостей
 from flask import Flask, render_template, request, url_for, flash, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 
+# инициализация приложения
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your secret key'
+app.config['SECRET_KEY'] = 'secret'
 
+# получить соединение с БД
 def get_db_connection():
     conn = sqlite3.connect('main.db')
     conn.row_factory = sqlite3.Row
     return conn
 
+# получить запись по ID
 def get_entry(entry_id):
     conn = get_db_connection()
     entries = conn.execute('SELECT * FROM entries WHERE id = ?', (entry_id,)).fetchone()
@@ -18,6 +22,7 @@ def get_entry(entry_id):
         abort(404)
     return entries
 
+# получить данные таблицы genders
 def get_genders():
     conn = get_db_connection()
     genders = conn.execute('SELECT * FROM genders').fetchall()
@@ -26,9 +31,11 @@ def get_genders():
         abort(404)
     return genders
 
+# инициализация соединения с БД
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 db = SQLAlchemy(app)
 
+# маршрут для просмотра
 @app.route('/')
 def index():
     conn = get_db_connection()
@@ -36,6 +43,7 @@ def index():
     conn.close()
     return render_template('index.html', entries=entries)
 
+# маршрут для создания
 @app.route('/create/', methods=('GET', 'POST'))
 def create():
     genders = get_genders()
@@ -60,6 +68,7 @@ def create():
             return redirect(url_for('index'))
     return render_template('create.html', genders=genders)
 
+# маршрут для редактирования
 @app.route('/<int:id>/edit/', methods=('GET', 'POST'))
 def edit(id):
     entry = get_entry(id)
@@ -87,6 +96,7 @@ def edit(id):
 
     return render_template('edit.html', entry=entry, genders=genders)
 
+# маршрут для удаления
 @app.route('/<int:id>/delete/', methods=('GET',))
 def delete(id):
     entry = get_entry(id)
@@ -97,5 +107,6 @@ def delete(id):
     flash('"Entry No. {}" was successfully deleted!'.format(entry['number']), 'info')
     return redirect(url_for('index'))
 
+# старт приложения в режиме debug
 app.run(debug=True)
 
